@@ -1,0 +1,74 @@
+# Helm values for kube-prometheus-stack
+# Install: helm install monitoring prometheus-community/kube-prometheus-stack -f observability/prometheus-values.yaml -n monitoring --create-namespace
+#
+# This configures Prometheus to:
+# 1. Auto-discover ServiceMonitor CRDs across all namespaces
+# 2. Auto-load Grafana dashboards from ConfigMaps with label "grafana_dashboard=1"
+# 3. Expose Grafana on NodePort 30090 for local access
+
+prometheus:
+  prometheusSpec:
+    # Scrape ServiceMonitors in ALL namespaces (not just monitoring)
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+
+    # Retention
+    retention: 7d
+
+    # Resource limits for the Prometheus pod itself
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: "1"
+        memory: 2Gi
+
+grafana:
+  enabled: true
+
+  # Expose on NodePort for local kind cluster access
+  service:
+    type: NodePort
+    nodePort: 30090
+
+  # Auto-load dashboards from ConfigMaps with this label
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      labelValue: "1"
+      searchNamespace: ALL
+
+  # Default admin credentials (change in production)
+  adminUser: admin
+  adminPassword: portal-admin
+
+  # Grafana config
+  grafana.ini:
+    auth.anonymous:
+      enabled: true
+      org_role: Viewer
+    security:
+      admin_user: admin
+
+  # Resource limits
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# Alertmanager — minimal config for local dev
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi

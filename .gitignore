@@ -1,0 +1,44 @@
+# RocketRide
+.rocketride/
+
+
+Plan.md
+Info.md
+
+# Binaries
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Go
+api/vendor/
+cli/vendor/
+*.test
+*.out
+coverage.html
+
+# Terraform
+infra/envs/**/.terraform/
+infra/envs/**/terraform.tfstate*
+infra/envs/**/.terraform.lock.hcl
+*.tfplan
+.terraform/
+*.tfstate.backup
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.local

@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: feature-auth
+  namespace: argocd
+  labels:
+    app.kubernetes.io/managed-by: environment-provisioning-portal
+    portal/environment: feature-auth
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/example/environment-provisioning-portal.git
+    targetRevision: HEAD
+    path: gitops/apps/feature-auth
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: env-feature-auth
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - PruneLast=true
+    retry:
+      limit: 3
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
