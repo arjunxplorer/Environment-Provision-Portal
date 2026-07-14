@@ -1,6 +1,10 @@
 # RocketRide
 .rocketride/
 
+# Claude Code / Cursor
+.claude/
+.cursor/
+
 
 Plan.md
 Info.md
